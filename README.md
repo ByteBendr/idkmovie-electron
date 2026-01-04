@@ -23,7 +23,7 @@ Mark movies as *Seen* or *Skipped* — IDKMovie remembers locally so you don’t
 
 🎨 **Smart Genre Tags**
 - Color‑coded genre pills
-- Auto‑collapse on mobile / small windows
+- Auto‑collapse ON small windows
 - Subtle hover glow
 
 🔒 **Privacy‑Friendly**
