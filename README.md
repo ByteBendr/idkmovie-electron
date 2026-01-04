@@ -1,4 +1,4 @@
-# 🎬 IDKMovie
+# 🎬 IDKMovie 🍿
 
 **IDKMovie** is a playful, Windows‑only desktop app that helps you decide *what to watch* when your brain says **“idk”**.
 
