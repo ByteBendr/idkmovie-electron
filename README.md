@@ -91,7 +91,7 @@ IDKMovie/
 │  └─ icon.ico
 ├─ index.html
 ├─ main.js
-├─ preload.js
+├─ preload.js (empty, but it's still here...idk why)
 ├─ package.json
 └─ README.md
 ```
