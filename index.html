@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDKMovie</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,0.06);
+      --panel-2: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.72);
+      --muted-2: rgba(255,255,255,0.58);
+
+      --accent: #66d9ff;
+      --accent-2: #7c5cff;
+
+      --shadow: 0 20px 60px rgba(0,0,0,0.40);
+      --shadow-soft: 0 10px 30px rgba(0,0,0,0.25);
+
+      --radius: 16px;
+      --radius-lg: 22px;
+      --focus: 0 0 0 4px rgba(102,217,255,0.18);
+
+      --max: 1140px;
+
+        --reel-row-h: 28px;
+        --reel-gap: 8px;
+        --reel-pad-y: 10px;
+        --reel-pad-x: 10px;
+
+    }
+
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(124,92,255,0.35), transparent 55%),
+        radial-gradient(900px 500px at 85% 0%, rgba(102,217,255,0.25), transparent 55%),
+        radial-gradient(700px 500px at 70% 110%, rgba(124,92,255,0.18), transparent 55%),
+        linear-gradient(180deg, #0b1220 0%, #070b13 100%);
+      overflow-x: hidden;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(circle at 50% 15%, black 0%, transparent 65%);
+      opacity: 0.18;
+    }
+
+    a{ color: inherit; }
+
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 28px 20px 50px;
+    }
+
+    header{
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .title{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1;
+    }
+
+    .logo{
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,0.6), transparent 55%),
+        linear-gradient(135deg, rgba(102,217,255,0.95), rgba(124,92,255,0.95));
+      box-shadow: 0 12px 30px rgba(124,92,255,0.25);
+      position: relative;
+      flex: 0 0 auto;
+    }
+    .logo::after{
+      content:"";
+      position: absolute;
+      inset: 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.25);
+      opacity: 0.8;
+    }
+
+    h1{
+      margin: 0;
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .pill{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill dot{
+      width: 8px; height: 8px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: inline-block;
+      box-shadow: 0 0 0 3px rgba(102,217,255,0.14);
+    }
+
+    .panel{
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .controls{
+      margin-top: 16px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .control-row{
+      display: grid;
+      grid-template-columns: 1.2fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .field{ display: grid; gap: 8px; }
+
+    label{
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .select{ position: relative; }
+
+    select{
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding: 12px 44px 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(10,16,30,0.55);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+    select:hover{ border-color: rgba(102,217,255,0.35); }
+    select:focus{ box-shadow: var(--focus); border-color: rgba(102,217,255,0.55); }
+
+    .select::after{
+      content:"";
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      opacity: 0.9;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.45));
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: 18px 18px;
+      pointer-events: none;
+    }
+
+    button{
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #07111c;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      background: linear-gradient(135deg, rgba(102,217,255,0.95), rgba(124,92,255,0.95));
+      box-shadow: 0 12px 30px rgba(124,92,255,0.18);
+      transition: transform .14s ease, box-shadow .14s ease, filter .14s ease, opacity .14s ease;
+    }
+    button:hover{ transform: translateY(-1px); filter: brightness(1.02); box-shadow: 0 16px 40px rgba(124,92,255,0.24); }
+    button:active{ transform: translateY(0px); box-shadow: 0 10px 24px rgba(124,92,255,0.18); }
+    button:disabled{ opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .btn-soft{
+      height: auto;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.92);
+      box-shadow: none;
+      font-weight: 800;
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
+    }
+    .btn-soft:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(102,217,255,0.35);
+      filter: none;
+      box-shadow: none;
+    }
+
+    .hint{
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.82);
+      white-space: nowrap;
+    }
+
+    .history{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hist-chip{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: rgba(255,255,255,0.82);
+      font-size: 12px;
+    }
+    .hist-btn{
+      height: auto;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      box-shadow: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .hist-btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(102,217,255,0.35);
+    }
+
+    /* Settings panel */
+    .settings{
+      display: none;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .settings.open{ display: grid; gap: 12px; }
+    .settings-grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .setting-item{
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.10);
+      display: grid;
+      gap: 8px;
+    }
+    .setting-title{
+      font-size: 12px;
+      color: rgba(255,255,255,0.72);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .setting-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .toggle{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+    .toggle input{ width: 18px; height: 18px; }
+    .muted{
+      color: rgba(255,255,255,0.72);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* Content / Card */
+    #content{
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .slot-shell{
+      padding: 22px 18px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: grid;
+      gap: 14px;
+      place-items: center;
+    }
+    .slot-title{
+      font-weight: 900;
+      letter-spacing: -0.01em;
+    }
+    .slot{
+      width: min(720px, 94vw);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.28);
+      overflow: hidden;
+      position: relative;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .slot::before{
+      content:"";
+      position:absolute;
+      inset:-60px;
+      background:
+        radial-gradient(360px 140px at 25% 30%, rgba(102,217,255,0.16), transparent 60%),
+        radial-gradient(280px 140px at 75% 70%, rgba(124,92,255,0.16), transparent 60%);
+      filter: blur(2px);
+      pointer-events:none;
+    }
+    .slot-window{
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    .reel{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      height: 110px;
+      overflow: hidden;
+      position: relative;
+    }
+    .reel::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.10) 35%, rgba(0,0,0,0.10) 65%, rgba(0,0,0,0.65) 100%);
+      pointer-events:none;
+    }
+    .reel-track{
+      position: absolute;
+      left: 0; right: 0;
+      top: 0;
+      display: grid;
+
+      gap: var(--reel-gap);
+      padding: var(--reel-pad-y) var(--reel-pad-x);
+
+      will-change: transform;
+    }
+
+    .reel-row{
+      height: var(--reel-row-h);
+      line-height: var(--reel-row-h);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.86);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 0 10px;
+    }
+
+    .slot-centerline{
+      position:absolute;
+      left: 14px;
+      right: 14px;
+      top: 14px;
+      height: 110px;
+      border-radius: 18px;
+      pointer-events:none;
+      z-index: 2;
+    }
+    .slot-centerline::after{
+      content:"";
+      position:absolute;
+      left: 0; right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: var(--reel-row-h);
+      border-radius: 12px;
+      border: 1px solid rgba(102,217,255,0.25);
+      box-shadow: 0 0 0 6px rgba(102,217,255,0.08);
+    }
+
+    .slot-sub{
+      position: relative;
+      z-index: 1;
+      color: rgba(255,255,255,0.72);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .state{
+      padding: 26px 18px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .alert{
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255, 75, 75, 0.10);
+      color: rgba(255,255,255,0.88);
+    }
+
+    .movie-card{
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .poster{
+      position: relative;
+      background: rgba(255,255,255,0.04);
+      min-height: 440px;
+    }
+
+    .poster img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.02);
+    }
+
+    .poster::after{
+      content:"";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.20) 35%, rgba(0,0,0,0.00) 65%);
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .info{
+      padding: 22px 22px 18px;
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .movie-title{
+      margin: 0;
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .meta{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      white-space: nowrap;
+    }
+
+    .rating{
+      color: rgba(102,217,255,0.95);
+      font-weight: 700;
+    }
+
+    .desc{
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 7;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .genres{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+      align-items: center;
+    }
+
+    .tag{
+      display: inline-flex;
+      align-items: center;
+
+      padding: 4px 8px;
+      font-size: 11px;
+      line-height: 1;
+      height: auto;
+      width: fit-content;
+      white-space: nowrap;
+
+      border-radius: 999px;
+
+      --tag-h: 200;
+      --tag-s: 85%;
+      --tag-l: 60%;
+
+      color: rgba(255,255,255,0.86);
+      border: 1px solid rgba(255,255,255,0.12);
+      background:
+        linear-gradient(
+          135deg,
+          hsla(var(--tag-h), var(--tag-s), var(--tag-l), 0.18),
+          hsla(var(--tag-h), var(--tag-s), calc(var(--tag-l) - 10%), 0.10)
+        );
+
+      box-shadow:
+        0 0 0 0 rgba(0,0,0,0),
+        inset 0 0 0 1px rgba(255,255,255,0.04);
+      transition:
+        transform 160ms ease,
+        border-color 160ms ease,
+        box-shadow 200ms ease,
+        filter 200ms ease,
+        background 200ms ease;
+    }
+
+    .tag:hover{
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      border-color: hsla(var(--tag-h), var(--tag-s), var(--tag-l), 0.45);
+      box-shadow:
+        0 10px 22px hsla(var(--tag-h), var(--tag-s), var(--tag-l), 0.14),
+        0 0 0 4px hsla(var(--tag-h), var(--tag-s), var(--tag-l), 0.10),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .tag-more{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      font-size: 11px;
+      line-height: 1;
+      border-radius: 999px;
+      border: 1px dashed rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.82);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .tag-more:hover{
+      transform: translateY(-1px);
+      border-color: rgba(102,217,255,0.35);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .actions{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 6px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .btn-row{
+      display: inline-flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .link{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.92);
+      transition: transform .14s ease, background .14s ease, border-color .14s ease;
+    }
+    .link:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(102,217,255,0.35);
+    }
+
+    .chev{
+      width: 18px;
+      height: 18px;
+      opacity: 0.9;
+      background:
+        linear-gradient(135deg, rgba(102,217,255,0.95), rgba(124,92,255,0.95));
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 18l6-6-6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: 18px 18px;
+    }
+
+    .small{
+      color: var(--muted-2);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    footer{
+      margin-top: 16px;
+      text-align: center;
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px){
+      .control-row{ grid-template-columns: 1fr; }
+      .brand{ align-items: flex-start; flex-direction: column; }
+      button{ width: 100%; }
+    }
+
+    @media (max-width: 780px){
+      .wrap{ padding: 18px 14px 34px; }
+      .controls{ padding: 14px; gap: 12px; }
+      .hint{ flex-direction: column; align-items: flex-start; gap: 8px; }
+
+      .settings-grid{ grid-template-columns: 1fr; }
+
+      button{ height: 48px; }
+
+      .movie-card{ grid-template-columns: 1fr; border-radius: 18px; }
+      .poster{ min-height: auto; height: 320px; }
+      .poster img{ height: 100%; object-fit: cover; }
+
+      .info{ padding: 14px; gap: 10px; }
+      .movie-title{ font-size: 18px; line-height: 1.15; }
+      .meta{ gap: 6px; font-size: 12px; }
+      .badge{ padding: 6px 9px; }
+
+      .desc{ -webkit-line-clamp: 4; font-size: 13px; line-height: 1.65; }
+
+      .genres{ gap: 6px; margin-top: 2px; }
+      .tag{ font-size: 10.5px; padding: 3px 7px; }
+      .tag-more{ font-size: 10.5px; padding: 3px 8px; }
+
+      .actions{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 6px;
+        padding-top: 12px;
+      }
+
+      .btn-row{ width: 100%; }
+      .link, .btn-soft{ width: 100%; justify-content: center; }
+
+      .small{ text-align: center; white-space: normal; }
+
+      .slot-window{ grid-template-columns: 1fr; }
+      .reel{ height: 94px; }
+      .slot-centerline{ top: 14px; height: 94px; }
+    }
+
+    @media (max-width: 420px){
+      .poster{ height: 260px; }
+      .movie-title{ font-size: 17px; }
+      .badge{ padding: 5px 8px; }
+      .desc{ -webkit-line-clamp: 3; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{ transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="title">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>IDKMovie</h1>
+            <p class="subtitle">Stop scrolling. Start watching.</p>
+          </div>
+        </div>
+        <div class="pill" title="Uses YTS API">
+          <dot></dot>
+          Powered by YTS
+        </div>
+      </div>
+
+      <div class="controls panel">
+        <div class="control-row">
+          <div class="field">
+            <label for="genre">Genre</label>
+            <div class="select">
+              <select id="genre">
+                <option value="">All Genres</option>
+                <option value="action">Action</option>
+                <option value="adventure">Adventure</option>
+                <option value="animation">Animation</option>
+                <option value="biography">Biography</option>
+                <option value="comedy">Comedy</option>
+                <option value="crime">Crime</option>
+                <option value="documentary">Documentary</option>
+                <option value="drama">Drama</option>
+                <option value="family">Family</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="film-noir">Film-Noir</option>
+                <option value="history">History</option>
+                <option value="horror">Horror</option>
+                <option value="music">Music</option>
+                <option value="musical">Musical</option>
+                <option value="mystery">Mystery</option>
+                <option value="romance">Romance</option>
+                <option value="sci-fi">Sci-Fi</option>
+                <option value="sport">Sport</option>
+                <option value="thriller">Thriller</option>
+                <option value="war">War</option>
+                <option value="western">Western</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="searchBtn" type="button">Surprise me</button>
+        </div>
+
+        <div class="hint">
+          <span>Tip: Press <span class="kbd">Enter</span> to roll again.</span>
+          <span class="history">
+            <span class="hist-chip" id="seenChip">Seen: 0</span>
+            <span class="hist-chip" id="skipChip">Skipped: 0</span>
+            <button class="hist-btn" id="settingsBtn" type="button">Settings</button>
+          </span>
+        </div>
+
+        <!-- Settings panel -->
+        <div class="settings" id="settingsPanel">
+          <div class="settings-grid">
+            <div class="setting-item">
+              <div class="setting-title">Minimum Rating</div>
+              <div class="setting-row">
+                <div class="muted">Only show movies rated at least:</div>
+                <select id="minRatingSelect" style="min-width: 140px;">
+                  <option value="5">5+</option>
+                  <option value="6" selected>6+</option>
+                  <option value="7">7+</option>
+                  <option value="8">8+</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-title">Filters</div>
+              <div class="setting-row">
+                <label class="toggle" style="text-transform:none; letter-spacing:0; font-size:13px; color: rgba(255,255,255,0.82);">
+                  <input type="checkbox" id="excludeHorrorToggle">
+                  Exclude Horror
+                </label>
+              </div>
+              <div class="muted">Removes Horror picks even if your genre is “All”.</div>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-title">History</div>
+            <div class="setting-row">
+              <div class="muted">Seen/Skipped is saved on this PC.</div>
+              <button class="hist-btn" id="clearHistoryBtn" type="button">Clear history</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <main id="content" aria-live="polite"></main>
+
+    <footer>
+      IDKMovie — no accounts, no tracking, just picks.
+    </footer>
+  </div>
+
+  <script>
+    const content = document.getElementById("content");
+    const searchBtn = document.getElementById("searchBtn");
+    const genreSelect = document.getElementById("genre");
+
+    const seenChip = document.getElementById("seenChip");
+    const skipChip = document.getElementById("skipChip");
+
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsPanel = document.getElementById("settingsPanel");
+    const minRatingSelect = document.getElementById("minRatingSelect");
+    const excludeHorrorToggle = document.getElementById("excludeHorrorToggle");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+
+    // Seen/Skip memory keys
+    const LS_SEEN = "idkmovie_seen_ids_v1";
+    const LS_SKIPPED = "idkmovie_skipped_ids_v1";
+
+    // Settings keys
+    const LS_MIN_RATING = "idkmovie_min_rating_v1";
+    const LS_EXCLUDE_HORROR = "idkmovie_exclude_horror_v1";
+
+    // Mobile auto-collapse genres
+    const MOBILE_COLLAPSE_MAX = 3;
+    const isMobile = () => window.matchMedia("(max-width: 780px)").matches;
+
+    let lastMovie = null;
+
+    // -------------------------
+    // LocalStorage helpers
+    // -------------------------
+    function readSet(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        const arr = raw ? JSON.parse(raw) : [];
+        return new Set(Array.isArray(arr) ? arr : []);
+      } catch {
+        return new Set();
+      }
+    }
+    function writeSet(key, set) {
+      localStorage.setItem(key, JSON.stringify(Array.from(set)));
+    }
+
+    function readBool(key, fallback = false) {
+      const v = localStorage.getItem(key);
+      if (v === null) return fallback;
+      return v === "true";
+    }
+    function writeBool(key, value) {
+      localStorage.setItem(key, value ? "true" : "false");
+    }
+
+    function readMinRating() {
+      const v = localStorage.getItem(LS_MIN_RATING);
+      const num = Number(v);
+      return Number.isFinite(num) ? num : 6;
+    }
+    function writeMinRating(v) {
+      localStorage.setItem(LS_MIN_RATING, String(v));
+    }
+
+    function updateHistoryUI() {
+      const seen = readSet(LS_SEEN);
+      const skipped = readSet(LS_SKIPPED);
+      seenChip.textContent = `Seen: ${seen.size}`;
+      skipChip.textContent = `Skipped: ${skipped.size}`;
+    }
+
+    function clearHistory() {
+      localStorage.removeItem(LS_SEEN);
+      localStorage.removeItem(LS_SKIPPED);
+      updateHistoryUI();
+    }
+
+    // -------------------------
+    // Sanitization + coloring
+    // -------------------------
+    function safeText(str) {
+      return String(str ?? "").replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[m]));
+    }
+
+    function genreToHSL(genre) {
+      const s = String(genre || "").toLowerCase();
+      let hash = 0;
+      for (let i = 0; i < s.length; i++) {
+        hash = ((hash << 5) - hash) + s.charCodeAt(i);
+        hash |= 0;
+      }
+      const hue = Math.abs(hash) % 360;
+      return { h: hue, s: 82, l: 62 };
+    }
+
+    function movieKey(movie) {
+      if (movie && (typeof movie.id === "number" || typeof movie.id === "string")) return String(movie.id);
+      return `${movie?.title || "unknown"}_${movie?.year || "0"}`;
+    }
+
+    // -------------------------
+    // Genres render + collapse
+    // -------------------------
+    function renderGenres(genres) {
+      if (!Array.isArray(genres) || !genres.length) return "";
+
+      const mobile = isMobile();
+      const collapsed = mobile && genres.length > MOBILE_COLLAPSE_MAX;
+      const visible = collapsed ? genres.slice(0, MOBILE_COLLAPSE_MAX) : genres;
+      const hiddenCount = collapsed ? (genres.length - MOBILE_COLLAPSE_MAX) : 0;
+
+      const pills = visible.map(g => {
+        const { h, s, l } = genreToHSL(g);
+        return `<span class="tag" style="--tag-h:${h}; --tag-s:${s}%; --tag-l:${l}%">${safeText(g)}</span>`;
+      }).join("");
+
+      const moreBtn = collapsed
+        ? `<button class="tag-more" type="button" data-action="toggle-genres" aria-expanded="false">+${hiddenCount} more</button>`
+        : "";
+
+      const encoded = encodeURIComponent(JSON.stringify(genres));
+
+      return `
+        <div class="genres" aria-label="Genres" data-genres="${encoded}" data-collapsed="${collapsed ? "true" : "false"}">
+          ${pills}${moreBtn}
+        </div>
+      `;
+    }
+
+    function expandGenres(genresEl) {
+      const raw = genresEl.getAttribute("data-genres");
+      const genres = JSON.parse(decodeURIComponent(raw));
+      const pills = genres.map(g => {
+        const { h, s, l } = genreToHSL(g);
+        return `<span class="tag" style="--tag-h:${h}; --tag-s:${s}%; --tag-l:${l}%">${safeText(g)}</span>`;
+      }).join("");
+      genresEl.innerHTML = `${pills}<button class="tag-more" type="button" data-action="toggle-genres" aria-expanded="true">Show less</button>`;
+      genresEl.setAttribute("data-collapsed", "false");
+    }
+
+    function collapseGenres(genresEl) {
+      const raw = genresEl.getAttribute("data-genres");
+      const genres = JSON.parse(decodeURIComponent(raw));
+      const visible = genres.slice(0, MOBILE_COLLAPSE_MAX);
+      const hiddenCount = genres.length - MOBILE_COLLAPSE_MAX;
+
+      const pills = visible.map(g => {
+        const { h, s, l } = genreToHSL(g);
+        return `<span class="tag" style="--tag-h:${h}; --tag-s:${s}%; --tag-l:${l}%">${safeText(g)}</span>`;
+      }).join("");
+
+      genresEl.innerHTML = `${pills}<button class="tag-more" type="button" data-action="toggle-genres" aria-expanded="false">+${hiddenCount} more</button>`;
+      genresEl.setAttribute("data-collapsed", "true");
+    }
+
+    // -------------------------
+    // Slot machine UI
+    // -------------------------
+    function renderSlotMachineUI() {
+      content.innerHTML = `
+        <div class="slot-shell" role="status" aria-label="Finding a movie">
+          <div class="slot-title">Rolling the reels…</div>
+          <div class="slot" aria-hidden="true">
+            <div class="slot-window">
+              <div class="reel"><div class="reel-track" id="track1"></div></div>
+              <div class="reel"><div class="reel-track" id="track2"></div></div>
+              <div class="reel"><div class="reel-track" id="track3"></div></div>
+            </div>
+            <div class="slot-centerline"></div>
+          </div>
+          <div class="slot-sub" id="slotSub">Spinning…</div>
+        </div>
+      `;
+    }
+
+    function buildRows(values, repeat = 12) {
+      const arr = [];
+      for (let i = 0; i < repeat; i++) {
+        for (const v of values) arr.push(v);
+      }
+      return arr;
+    }
+
+    function fillTrack(trackEl, values) {
+      trackEl.innerHTML = values.map(v => `<div class="reel-row">${safeText(v)}</div>`).join("");
+      trackEl.style.transition = "none";
+      trackEl.style.transform = "translateY(0px)";
+      void trackEl.offsetHeight;
+    }
+
+    function getReelMetrics(trackEl) {
+      const cs = getComputedStyle(trackEl);
+      const gap = parseFloat(cs.rowGap || cs.gap || "0") || 0;
+      const padTop = parseFloat(cs.paddingTop || "0") || 0;
+
+      const firstRow = trackEl.querySelector(".reel-row");
+      const rowH = firstRow ? firstRow.getBoundingClientRect().height : 28;
+
+      const reelEl = trackEl.parentElement;
+      const reelH = reelEl.getBoundingClientRect().height;
+
+      return { gap, padTop, rowH, reelH, step: rowH + gap };
+    }
+
+    function startLoopSpin(trackEl) {
+      const { step } = getReelMetrics(trackEl);
+      let y = 0;
+      const maxSteps = 10;
+      const maxY = step * maxSteps;
+
+      const timer = setInterval(() => {
+        y -= step;
+        if (Math.abs(y) > maxY) y = 0;
+        trackEl.style.transition = "transform 80ms linear";
+        trackEl.style.transform = `translateY(${y}px)`;
+      }, 80);
+
+      return () => clearInterval(timer);
+    }
+
+    function animateReelToValue(trackEl, value, ms) {
+      const { step, padTop, rowH, reelH } = getReelMetrics(trackEl);
+      const rows = Array.from(trackEl.querySelectorAll(".reel-row"));
+      const texts = rows.map(r => r.textContent.trim());
+
+      let idx = texts.lastIndexOf(String(value).trim());
+      if (idx < 0) idx = Math.max(0, rows.length - 6);
+
+      const centerOffset = (reelH / 2) - (rowH / 2);
+      const translate = -((idx * step) + padTop - centerOffset);
+
+      trackEl.style.transition = `transform ${ms}ms cubic-bezier(.12,.9,.2,1)`;
+      trackEl.style.transform = `translateY(${translate}px)`;
+    }
+
+    // -------------------------
+    // Render movie card
+    // -------------------------
+    function displayMovie(movie) {
+      lastMovie = movie;
+
+      const title = safeText(movie.title);
+      const year = safeText(movie.year);
+      const rating = safeText(movie.rating);
+      const runtime = movie.runtime ? `${safeText(movie.runtime)} min` : "";
+      const desc = safeText(movie.description_full || movie.summary || "");
+      const url = movie.url || "#";
+      const genres = Array.isArray(movie.genres) ? movie.genres : [];
+      const poster = movie.large_cover_image || movie.medium_cover_image || "";
+
+      content.innerHTML = `
+        <article class="movie-card" role="article">
+          <div class="poster">
+            <img
+              src="${poster}"
+              alt="${title} poster"
+              loading="lazy"
+              decoding="async"
+              onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22900%22 height=%221200%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%230a1020%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23b9d7e6%22 font-family=%22Inter,Segoe UI,Arial%22 font-size=%2248%22%3ENo Poster%3C/text%3E%3C/svg%3E';"
+            />
+          </div>
+
+          <div class="info">
+            <div>
+              <h2 class="movie-title" title="${title}">${title}</h2>
+              <div class="meta" aria-label="Movie metadata">
+                <span class="badge"><span class="rating">★ ${rating}</span> / 10</span>
+                <span class="badge">${year}</span>
+                ${runtime ? `<span class="badge">${runtime}</span>` : ""}
+              </div>
+            </div>
+
+            ${desc ? `<p class="desc">${desc}</p>` : ""}
+
+            ${renderGenres(genres)}
+
+            <div class="actions">
+              <div class="btn-row">
+                <a class="link" href="${url}" target="_blank" rel="noopener noreferrer">
+                  View details <span class="chev" aria-hidden="true"></span>
+                </a>
+                <button class="btn-soft" type="button" id="seenBtn">Seen ✅</button>
+                <button class="btn-soft" type="button" id="skipBtn">Skip ⏭️</button>
+              </div>
+              <span class="small">Seen/Skip is remembered on this PC.</span>
+            </div>
+          </div>
+        </article>
+      `;
+
+      document.getElementById("seenBtn").addEventListener("click", () => markSeen(movie));
+      document.getElementById("skipBtn").addEventListener("click", () => markSkipped(movie));
+    }
+
+    function markSeen(movie) {
+      const id = movieKey(movie);
+      const seen = readSet(LS_SEEN);
+      seen.add(id);
+      writeSet(LS_SEEN, seen);
+      updateHistoryUI();
+      getRandomMovie();
+    }
+
+    function markSkipped(movie) {
+      const id = movieKey(movie);
+      const skipped = readSet(LS_SKIPPED);
+      skipped.add(id);
+      writeSet(LS_SKIPPED, skipped);
+      updateHistoryUI();
+      getRandomMovie();
+    }
+
+    // -------------------------
+    // State helpers
+    // -------------------------
+    function setState(type, message = "") {
+      if (type === "slot") {
+        renderSlotMachineUI();
+        const sub = document.getElementById("slotSub");
+        if (sub) sub.textContent = message || "Spinning…";
+        return;
+      }
+      if (type === "error") {
+        content.innerHTML = `
+          <div class="panel alert">
+            <strong>Something went wrong.</strong> ${message || "Please try again."}
+          </div>
+        `;
+        return;
+      }
+      if (type === "empty") {
+        content.innerHTML = `
+          <div class="panel state">
+            ${message || "No results for this genre. Try another one."}
+          </div>
+        `;
+        return;
+      }
+      content.innerHTML = "";
+    }
+
+    // -------------------------
+    // Main fetch + slot animation
+    // -------------------------
+    async function getRandomMovie() {
+      const genre = genreSelect.value;
+      const minRating = readMinRating();
+      const excludeHorror = readBool(LS_EXCLUDE_HORROR, false);
+
+      searchBtn.disabled = true;
+      setState("slot", "Pulling a pick from the void…");
+
+      try {
+        let apiUrl = `https://yts.lt/api/v2/list_movies.json?limit=50&sort_by=rating&minimum_rating=${encodeURIComponent(minRating)}`;
+        if (genre) apiUrl += `&genre=${encodeURIComponent(genre)}`;
+
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        const movies = data?.status === "ok" ? data?.data?.movies : null;
+
+        if (!Array.isArray(movies) || movies.length === 0) {
+          setState("empty");
+          return;
+        }
+
+        const seen = readSet(LS_SEEN);
+        const skipped = readSet(LS_SKIPPED);
+
+        const filtered = movies.filter(m => {
+          const id = movieKey(m);
+          if (seen.has(id) || skipped.has(id)) return false;
+
+          if (excludeHorror) {
+            const gs = Array.isArray(m.genres) ? m.genres.map(x => String(x).toLowerCase()) : [];
+            if (gs.includes("horror")) return false;
+          }
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          setState("empty", "No movies left after filters (Seen/Skipped + Settings). Try another genre or clear history.");
+          return;
+        }
+
+        const chosen = filtered[Math.floor(Math.random() * filtered.length)];
+
+        // Slot UI elements
+        const t1 = document.getElementById("track1");
+        const t2 = document.getElementById("track2");
+        const t3 = document.getElementById("track3");
+        const sub = document.getElementById("slotSub");
+
+        if (!t1 || !t2 || !t3) {
+          displayMovie(chosen);
+          return;
+        }
+
+        // Reel 1: Genres
+        const chosenGenres = Array.isArray(chosen.genres) && chosen.genres.length ? chosen.genres : ["Mystery"];
+        const genrePool = [
+          "Action","Comedy","Thriller","Drama","Sci-Fi","Romance","Crime","Adventure","Animation","Fantasy",
+          "Mystery","War","Western","Family","History","Sport","Music","Documentary","Biography","Film-Noir"
+        ];
+        if (excludeHorror) {
+          // no Horror in pool
+        } else {
+          if (!genrePool.includes("Horror")) genrePool.push("Horror");
+        }
+        const gTarget = String(chosenGenres[0]);
+
+        // Reel 2: Rating (use a fixed pool, pick closest)
+        const ratingVals = ["5.8","6.1","6.4","6.8","7.1","7.4","7.8","8.1","8.4","8.7","9.0"];
+        const rTarget = (typeof chosen.rating === "number" ? chosen.rating.toFixed(1) : String(chosen.rating || "7.0"));
+        const rFallback = ratingVals.reduce((best, v) => {
+          const d = Math.abs(parseFloat(v) - parseFloat(rTarget));
+          const bd = Math.abs(parseFloat(best) - parseFloat(rTarget));
+          return d < bd ? v : best;
+        }, ratingVals[0]);
+
+        // Reel 3: Year
+        const yearNow = new Date().getFullYear();
+        const yPool = [];
+        for (let y = yearNow; y >= 1980; y--) yPool.push(String(y));
+        const yTarget = String(chosen.year || "2005");
+        const yFallback = yPool.includes(yTarget) ? yTarget : (yPool[0] || "2000");
+
+        // Fill tracks (repeat enough so lastIndexOf works nicely)
+        fillTrack(t1, buildRows(genrePool, 8));
+        fillTrack(t2, buildRows(ratingVals, 10));
+        fillTrack(t3, buildRows(yPool.slice(0, 30), 6));
+
+        // Start loop spin
+        const stop1 = startLoopSpin(t1);
+        const stop2 = startLoopSpin(t2);
+        const stop3 = startLoopSpin(t3);
+
+        if (sub) sub.textContent = "Spinning…";
+
+        // Stop reels one by one
+        await new Promise(res => setTimeout(res, 650));
+        stop1();
+        animateReelToValue(t1, gTarget, 520);
+        if (sub) sub.textContent = "Locking genre…";
+
+        await new Promise(res => setTimeout(res, 520));
+        stop2();
+        animateReelToValue(t2, rFallback, 620);
+        if (sub) sub.textContent = "Locking rating…";
+
+        await new Promise(res => setTimeout(res, 620));
+        stop3();
+        animateReelToValue(t3, yFallback, 740);
+        if (sub) sub.textContent = "Locking year…";
+
+        await new Promise(res => setTimeout(res, 780));
+        displayMovie(chosen);
+
+      } catch (e) {
+        console.error(e);
+        setState("error");
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    // -------------------------
+    // Settings UI
+    // -------------------------
+    settingsBtn.addEventListener("click", () => {
+      settingsPanel.classList.toggle("open");
+    });
+
+    minRatingSelect.addEventListener("change", () => {
+      writeMinRating(Number(minRatingSelect.value));
+    });
+
+    excludeHorrorToggle.addEventListener("change", () => {
+      writeBool(LS_EXCLUDE_HORROR, excludeHorrorToggle.checked);
+    });
+
+    clearHistoryBtn.addEventListener("click", () => {
+      clearHistory();
+    });
+
+    // -------------------------
+    // Global events
+    // -------------------------
+    searchBtn.addEventListener("click", getRandomMovie);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") getRandomMovie();
+    });
+
+    // Toggle genres on mobile
+    document.addEventListener("click", (e) => {
+      const btn = e.target?.closest?.("[data-action='toggle-genres']");
+      if (!btn) return;
+
+      const genresEl = btn.closest(".genres");
+      if (!genresEl) return;
+      if (!isMobile()) return;
+
+      const collapsed = genresEl.getAttribute("data-collapsed") === "true";
+      if (collapsed) expandGenres(genresEl);
+      else collapseGenres(genresEl);
+    });
+
+    window.addEventListener("resize", () => {
+      const genresEl = document.querySelector(".genres");
+      if (!genresEl) return;
+      const raw = genresEl.getAttribute("data-genres");
+      if (!raw) return;
+
+      const genres = JSON.parse(decodeURIComponent(raw));
+      const shouldCollapse = isMobile() && genres.length > MOBILE_COLLAPSE_MAX;
+
+      if (shouldCollapse && genresEl.getAttribute("data-collapsed") !== "true") {
+        collapseGenres(genresEl);
+      }
+      if (!isMobile()) {
+        expandGenres(genresEl);
+      }
+    });
+
+    // -------------------------
+    // Init
+    // -------------------------
+    function initSettings(){
+      const mr = readMinRating();
+      minRatingSelect.value = String(mr);
+
+      const exH = readBool(LS_EXCLUDE_HORROR, false);
+      excludeHorrorToggle.checked = exH;
+    }
+
+    initSettings();
+    updateHistoryUI();
+    getRandomMovie();
+  </script>
+
+</body>
+</html>
