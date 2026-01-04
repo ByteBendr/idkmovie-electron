@@ -78,7 +78,7 @@ The installer will be generated in the `dist/` folder.
 
 - **Electron**
 - **Vanilla HTML / CSS / JS**
-- **YTS API** (movie data)
+- **YTS API** (movie data) **(provided with free usage by the generosity of the people over at YTS, no API keys needed)**
 - **LocalStorage** (Seen / Skip memory)
 
 ---
