@@ -37,8 +37,9 @@ Mark movies as *Seen* or *Skipped* — IDKMovie remembers locally so you don’t
 ## 🖥️ Platform
 
 - ✅ Windows 10 / 11
-- ❌ macOS (not planned, won't develop)
-- ❌ Linux (not planned, won't develop)
+- ❌ macOS, Linux, Android (not planned, won't develop, you can check the web version of it below)
+
+[🎬IDKMovie Web Version🍿](https://bytebendr.github.io/idkmovie-webapp/)
 
 ---
 
